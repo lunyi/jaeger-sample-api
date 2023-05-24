@@ -5,7 +5,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
 using jaeget_sample_api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +51,6 @@ builder.Services
 		.AddSource("TGS.*")
 		.AddAspNetCoreInstrumentation()
 		.AddHttpClientInstrumentation()
-		.AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
 		.AddProfileViewExporter()
 		.AddOtlpExporter())
 	.WithMetrics(meterBuiler => meterBuiler
@@ -70,9 +68,9 @@ builder.Services
 			&& !httpContext.Request.Path.StartsWithSegments("/metrics")
 			&& !new[] { "html", "ico", "png", "jpg" }.Any(
 				ext => httpContext.Request.Path.Value.EndsWith($".{ext}")))
-	.AddProfileViewer()
-	.AddInterceptionService()
-	.AddServiceUtiltiyInterceptors();
+	.AddProfileViewer();
+	//.AddInterceptionService()
+	//.AddServiceUtiltiyInterceptors();
 
 var app = builder.Build();
 
